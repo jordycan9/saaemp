@@ -42,6 +42,27 @@ export default {
             next(e);
         }
     },
+
+    listFecha: async(req,res,next)=>{
+        try{
+         
+          
+
+           
+            let fecha1=req.query.fecha1;
+            let fecha2=req.query.fecha2;
+           
+            const reg = await models.Embarcacion.find({$and:[{createdAt:{$gte : fecha1 , $lte : fecha2}}]})
+            .sort({'createdAt':-1});
+            res.status(200).json(reg);
+        }catch(e){
+            res.status(500).send({
+                message:'Ocurrio un error'
+            });
+            next(e);
+        }
+    },
+
     update: async(req,res,next)=>{
         try{
             const reg = await models.Embarcacion.findByIdAndUpdate({_id:req.body._id},{nombre:req.body.nombre,eslora:req.body.eslora,

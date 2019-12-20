@@ -36,7 +36,7 @@ export default {
     list: async(req,res,next)=>{
         try{
             let valor = req.query.valor;
-            const reg = await models.CambioGuardia.find({'folio':new RegExp(valor,'i')},{createdAt:0})
+            const reg = await models.CambioGuardia.find({'usuario':valor})
             .populate('usuario')
             .populate('embarcacion')
             .populate('agencia')
@@ -49,10 +49,45 @@ export default {
             next(e);
         }
     },
+    listAdmin: async(req,res,next)=>{
+        try{
+            let valor = req.query.valor;
+            const reg = await models.CambioGuardia.find()
+            .populate('usuario')
+            .populate('embarcacion')
+            .populate('agencia')
+            .sort({'createdAt':-1});
+            res.status(200).json(reg);
+        }catch(e){
+            res.status(500).send({
+                message:'Ocurrio un error'
+            });
+            next(e);
+        }
+    },
+    listFecha: async(req,res,next)=>{
+        try{
+       
+            let fecha1=req.query.fecha1;
+            let fecha2=req.query.fecha2;
+           
+            const reg = await models.CambioGuardia.find({$and:[{fecha:{$gte : fecha1 , $lte : fecha2}}]})
+            .sort({'createdAt':-1})
+            .populate('embarcacion')
+            .populate('agencia')
+            .populate('usuario');
+            res.status(200).json(reg);
+        }catch(e){
+            res.status(500).send({
+                message:'Ocurrio un error'
+            });
+            next(e);
+        }
+    },
     update: async(req,res,next)=>{
         try{
-            const reg = await models.Embarcacion.findByIdAndUpdate({_id:req.body._id},{nombre:req.body.nombre,eslora:req.body.eslora,
-            manga: req.body.manga, tbr: req.body.tbr, trb: req.body.trb, calado: req.body.calado, tipo: req.body.tipo,armador:req.body.armador});
+            const reg = await models.CambioGuardia.findByIdAndUpdate({_id:req.body._id},{folio:req.body.folio,usuario:req.body.usuario,
+            agencia: req.body.agencia, fecha: req.body.fecha, embarcacion: req.body.embarcacion, detalles: req.body.detalles, pasajeros: req.body.pasajeros,muelle:req.body.muelle, estado:0});
             res.status(200).json(reg)
         }catch(e){
             res.status(500).send({
@@ -74,7 +109,7 @@ export default {
     },
     activate: async(req,res,next)=>{
         try{
-            const reg = await models.CambioGuardia.findByIdAndUpdate({_id:req.body._id},{estado:1});
+            const reg = await models.CambioGuardia.findByIdAndUpdate({_id:req.body._id},{estado:1,aprobacionAmls:req.body.aprobacionAmls});
             res.status(200).json(reg)
 
         }catch(e){
@@ -86,7 +121,7 @@ export default {
     },
     deactivate: async(req,res,next)=>{
         try{
-            const reg = await models.CambioGuardia.findByIdAndUpdate({_id:req.body._id},{estado:0});
+            const reg = await models.CambioGuardia.findByIdAndUpdate({_id:req.body._id},{estado:2,aprobacionAmls:req.body.aprobacionAmls});
             res.status(200).json(reg)
         }catch(e){
             res.status(500).send({
@@ -94,5 +129,28 @@ export default {
             });
             next(e);
         }
-    }
+    },
+    deactivateApi: async(req,res,next)=>{
+        try{
+            const reg = await models.CambioGuardia.findByIdAndUpdate({_id:req.body._id},{estado:1,aprobacionApi:req.body.aprobacionApi});
+            res.status(200).json(reg)
+        }catch(e){
+            res.status(500).send({
+                messaje:'Ocurrio un error'
+            });
+            next(e);
+        }
+    },
+    confirmarApi: async(req,res,next)=>{
+        try{
+            const reg = await models.CambioGuardia.findByIdAndUpdate({_id:req.body._id},{estado:3,aprobacionApi:req.body.aprobacionApi});
+            res.status(200).json(reg)
+
+        }catch(e){
+            res.status(500).send({
+                messaje:'Ocurrio un error'
+            });
+            next(e);
+        }
+    },
 }

@@ -3,6 +3,7 @@ const agenciaSchema = new Schema({
     nombre:{type: String, unique:true, required:true},
     rfc:{type:String, unique:true, required:true},
     representante:{type:String, required:true},
+    folio:{type:String,required:true},
     estado:{type:Number, default:1},
     createdAt:{type: Date, default:Date.now}
 })

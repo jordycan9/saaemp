@@ -7,7 +7,7 @@ export default{
             });
         }
         const response = await tokenService.decode(req.headers.token);
-        if(response.rol == 'Administrador' || response.rol == 'Cliente' || response.rol == 'Proveedor' || response.rol == 'Visor'){
+        if(response.rol == 'Administrador' || response.rol == 'Cliente' || response.rol == 'Proveedor' || response.rol == 'APITAB'){
             next();
         }else{
             return res.status(403).send({
@@ -23,7 +23,7 @@ export default{
             });
         }
         const response = await tokenService.decode(req.headers.token);
-        if(response.rol == 'Administrador' || response.rol=='Cliente'){
+        if(response.rol == 'Administrador' || response.rol=='Cliente' || response.rol=='APITAB'){
             next();
         }else{
             return res.status(403).send({
@@ -38,7 +38,7 @@ export default{
             });
         }
         const response = await tokenService.decode(req.headers.token);
-        if(response.rol == 'Cliente' || response.rol == 'Administrador'){
+        if(response.rol == 'Cliente' || response.rol == 'Administrador'|| response.rol == "APITAB"){
             next();
         }else{
             return res.status(403).send({
@@ -61,14 +61,14 @@ export default{
             })
         }
     },
-    verifyVisor: async(req,res,next) => {
+    verifyApitab: async(req,res,next) => {
         if(!req.headers.token){
             return res.status(404).send({
                 message: 'No token'
             });
         }
         const response = await tokenService.decode(req.headers.token);
-        if(response.rol == 'Visor'){
+        if(response.rol == 'Administrador' || response.rol=='APITAB' || response.rol == 'Cliente'){
             next();
         }else{
             return res.status(403).send({

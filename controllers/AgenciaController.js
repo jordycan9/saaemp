@@ -45,7 +45,7 @@ export default {
     update: async(req,res,next)=>{
         try{
             const reg = await models.Agencia.findByIdAndUpdate({_id:req.body._id},{nombre:req.body.nombre,rfc:req.body.rfc,
-            representante: req.body.representante});
+            representante: req.body.representante,folio:req.body.folio});
             res.status(200).json(reg)
         }catch(e){
             res.status(500).send({
